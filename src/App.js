@@ -1,15 +1,8 @@
-import Stack from "./pages/Stack";
+import Stack from "./pages/Stack/Stack";
 import "./App.css";
-import {
-  BrowserRouter,
-  createBrowserRouter,
-  Link,
-  Outlet,
-  Route,
-  RouterProvider,
-  Routes,
-} from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import SortedBinaryTree from "./pages/SortedBinaryTree/SortedBinaryTree";
 
 const Layout = () => {
   return (
@@ -32,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "stack",
         element: <Stack />,
+      },
+      {
+        path: "sorted_binary_tree",
+        element: <SortedBinaryTree />,
       },
     ],
   },

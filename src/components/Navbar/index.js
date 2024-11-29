@@ -15,8 +15,9 @@ const Navbar = () => {
           <Link className="navlink" to="/stack">
             Stack
           </Link>
-          {/* Second Nav */}
-          {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
+          <Link className="navlink" to="/sorted_binary_tree">
+            Sorted Binary Tree
+          </Link>
         </div>
         <nav className="NavBtn">
           <Link className="NavBtnLink" to="/stack">

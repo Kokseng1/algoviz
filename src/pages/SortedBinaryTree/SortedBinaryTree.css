@@ -1,0 +1,38 @@
+div {
+  font-family: Arial, sans-serif;
+}
+
+input {
+  margin-right: 10px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.childnode-container {
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+}
+.tree-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.node-value {
+  background-color: #6da2db;
+  padding: 5px;
+  border-radius: 30%;
+}
