@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./Stack.css";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 
 const Stack = () => {
   const [items, setItems] = useState(["second demo", "first demo"]);
   const [currAddInput, setcurrAddInput] = useState("");
   const [lastPop, setLastPop] = useState("");
+  const lastItemRef = useRef(null);
 
   const addItem = (item) => {
     if (currAddInput.trim() !== "") {
-      setNewItem(currAddInput);
+      setItems([...items, item]);
+      setcurrAddInput("");
       setTimeout(() => {
-        setItems([...items, currAddInput]);
-        setNewItem(null);
-        setcurrAddInput("");
-      }, 500);
+        lastItemRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 0);
     }
   };
   const handleAddItemChange = (e) => {
@@ -25,11 +26,35 @@ const Stack = () => {
   };
 
   return (
-    <div className="main">
+    <div className="main w-screen">
+      <div className="pop-container">
+        <button className="pop-add-button" onClick={() => popClick()}>
+          Pop
+        </button>
+        <div className="lastPop"> Popped : {lastPop} </div>
+      </div>
       <ul className="stack-list">
-        {items.map((item, id) => (
-          <li key={-id}>{item}</li>
-        ))}
+        <MotionConfig>
+          <AnimatePresence>
+            {items.map((item, id) => (
+              <motion.li
+                initial={{
+                  y: -30,
+                }}
+                animate={{
+                  y: 0,
+                }}
+                exit={{
+                  y: -30,
+                }}
+                key={id}
+                ref={id === items.length - 1 ? lastItemRef : null}
+              >
+                {item}
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </MotionConfig>
       </ul>
       <label className="add-container">
         Add item to stack :
@@ -41,12 +66,13 @@ const Stack = () => {
             if (e.key === "Enter") addItem(currAddInput);
           }}
         />
-        <button onClick={() => addItem(currAddInput)}>Add</button>
+        <button
+          className="pop-add-button"
+          onClick={() => addItem(currAddInput)}
+        >
+          Add
+        </button>
       </label>
-      <div className="pop-container">
-        <button onClick={() => popClick()}>Pop</button>
-        <div className="lastPop"> Popped : {lastPop} </div>
-      </div>
     </div>
   );
 };

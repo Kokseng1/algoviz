@@ -1,13 +1,15 @@
 import React from "react";
 import "./navbar.css";
-import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { OptionsButton } from "../AnimatedHamburgerButton/AnimatedHamburgerButton";
 
 const Navbar = () => {
   return (
     <>
-      <nav className="mainnav">
-        <FaBars className="bars" />
+      <nav className="mainnav w-screen">
+        <div className="options-container">
+          <OptionsButton />
+        </div>
 
         <div className="navmenu">
           <Link className="navlink" to="/stack">

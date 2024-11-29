@@ -51,7 +51,7 @@ input {
   border: 1px solid #ccc;
 }
 
-button {
+.pop-add-button {
   padding: 10px 20px;
   margin: 10px;
   border-radius: 5px;
@@ -61,7 +61,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.pop-add-button:hover {
   background-color: #27ae60;
 }
 
