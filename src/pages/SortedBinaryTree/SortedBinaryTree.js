@@ -237,7 +237,7 @@ const BinaryTree = () => {
           id="tree-container"
           style={{
             width: "100%",
-            border: "1px solid #ccc",
+            // border: "1px solid #ccc",
             // display: "flex",
             // justifyContent: "flex-start",
             overflowX: "auto",
@@ -261,7 +261,6 @@ const BinaryTree = () => {
 };
 
 const TreeDisplay = ({ node, searchedNode }) => {
-
   if (!node) {
     return (
       <div
@@ -331,8 +330,9 @@ const TreeDisplay = ({ node, searchedNode }) => {
         className="children-container"
         style={{
           display: "flex",
+          minWidth: "90%",
           flexDirection: " row",
-          // border: "1px solid #ccc",
+          // border: "1px solid blue",
           alignItems: "",
         }}
       >
