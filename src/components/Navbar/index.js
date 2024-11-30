@@ -12,10 +12,10 @@ const Navbar = () => {
         </div>
 
         <div className="navmenu">
-          <Link className="navlink" to="/stack">
+          <Link className="navlink" to="stack">
             Stack
           </Link>
-          <Link className="navlink" to="/sorted_binary_tree">
+          <Link className="navlink" to="sorted_binary_tree">
             Sorted Binary Tree
           </Link>
         </div>
