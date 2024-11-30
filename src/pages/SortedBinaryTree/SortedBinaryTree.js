@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SortedBinaryTree.css";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 
@@ -18,6 +18,23 @@ const BinaryTree = () => {
   const [deletedNodeInput, setDeletedNodeInput] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [range, setRange] = useState({ min: "", max: "" });
+  const [scale, setScale] = useState(1);
+
+  const calculateScale = () => {
+    const pageContainer = document.getElementById("page-container");
+    const treenode = document.getElementById("treenode");
+    const scaleY = (pageContainer.offsetWidth / treenode.offsetWidth) * 0.9;
+    setScale(scaleY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", calculateScale);
+    calculateScale();
+
+    return () => {
+      window.removeEventListener("resize", calculateScale);
+    };
+  }, [root]);
 
   const insertNode = (node, value) => {
     if (!node) {
@@ -37,7 +54,7 @@ const BinaryTree = () => {
 
   const handleAdd = (value) => {
     if (value !== null) {
-      setRoot((prevRoot) => insertNode(prevRoot, value));
+      setRoot((prevRoot) => insertNode(prevRoot, Number(value)));
       setInputValue("");
     }
   };
@@ -119,67 +136,132 @@ const BinaryTree = () => {
   }, []);
 
   return (
-    <div>
-      <input
-        type="number"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleAdd(inputValue);
+    <div className="w-screen">
+      <div
+        id="page-container"
+        style={{
+          maxWidth: "100%",
+          padding: "30px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          // border: "1px solid #ccc",
         }}
-        placeholder="Enter a number"
-      />
-      <button onClick={() => handleAdd(inputValue)}>Add to Tree</button>
-      <input
-        type="number"
-        value={searchedNodeInput}
-        onChange={(e) => setSearchedNodeInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSearch(root, searchedNodeInput);
-        }}
-        placeholder="search for a node"
-      />
-      <button onClick={() => handleSearch(root, searchedNodeInput)}>
-        Search
-      </button>
-      <input
-        type="number"
-        value={deletedNodeInput}
-        onChange={(e) => setDeletedNodeInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleDelete();
-          }
-        }}
-        placeholder="Delete a node"
-      />
-      <button onClick={handleDelete}>Delete</button>
-      <br></br>
-      <label>
-        Min Value:
-        <input
-          type="number"
-          value={range.min}
-          onChange={(e) => handleMinMaxChange("min", e.target.value)}
-        />
-      </label>
-      <label>
-        Max Value:
-        <input
-          type="number"
-          value={range.max}
-          onChange={(e) => handleMinMaxChange("max", e.target.value)}
-        />
-      </label>
-      <button onClick={handleAddRandomNode}>Add random node</button>
-      <div className="childnode-container">
-        <TreeDisplay node={root} searchedNode={searchedNode} />
+      >
+        <div
+          className="input-fields"
+          style={{
+            border: "1px solid #ccc",
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          <div className="add-node">
+            <input
+              type="number"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAdd(inputValue);
+              }}
+              placeholder="Enter a number"
+            />
+            <button onClick={() => handleAdd(inputValue)}>Add to Tree</button>
+          </div>
+          <div className="search-node">
+            <input
+              type="number"
+              value={searchedNodeInput}
+              onChange={(e) => setSearchedNodeInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch(root, searchedNodeInput);
+              }}
+              placeholder="search for a node"
+            />
+            <button onClick={() => handleSearch(root, searchedNodeInput)}>
+              Search
+            </button>
+          </div>
+          <div className="delete-node">
+            <input
+              type="number"
+              value={deletedNodeInput}
+              onChange={(e) => setDeletedNodeInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleDelete();
+                }
+              }}
+              placeholder="Delete a node"
+            />
+            <button onClick={handleDelete}>Delete</button>
+          </div>
+          <div
+            className="generate-random-node"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <div
+              className="min-max-input"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <label>
+                Min Value:
+                <input
+                  type="number"
+                  value={range.min}
+                  onChange={(e) => handleMinMaxChange("min", e.target.value)}
+                />
+              </label>
+              <label>
+                Max Value:
+                <input
+                  type="number"
+                  value={range.max}
+                  onChange={(e) => handleMinMaxChange("max", e.target.value)}
+                />
+              </label>
+            </div>
+            <button
+              onClick={handleAddRandomNode}
+              style={{ height: "30px", alignSelf: "center" }}
+            >
+              Add random node
+            </button>
+          </div>
+        </div>
+        <div
+          id="tree-container"
+          style={{
+            width: "100%",
+            border: "1px solid #ccc",
+            // display: "flex",
+            // justifyContent: "flex-start",
+            overflowX: "auto",
+          }}
+        >
+          <div
+            id="treenode"
+            style={{
+              minWidth: "max-content",
+              transform: `scale(${scale})`,
+              transformOrigin: "top",
+              transition: "transform 0.2s ease-out",
+            }}
+          >
+            <TreeDisplay node={root} searchedNode={searchedNode} />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 const TreeDisplay = ({ node, searchedNode }) => {
+
   if (!node) {
     return (
       <div
@@ -198,8 +280,12 @@ const TreeDisplay = ({ node, searchedNode }) => {
       style={{
         marginLeft: "5px",
         marginRight: "5px",
-        border: "1px solid #ccc",
-        padding: "10px",
+        // border: "1px solid #ccc",
+        // padding: "10px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <div
@@ -212,36 +298,56 @@ const TreeDisplay = ({ node, searchedNode }) => {
       </div>
       <motion.svg
         width="100%"
-        height="60"
-        viewBox="0 0 600 100"
+        height="100"
         style={{
           // border: "1px solid #ccc",
           display: "flex",
           justifyContent: "center",
         }}
       >
-        <motion.line
-          x1="300"
-          y1="0"
-          x2="0"
-          y2="100"
-          stroke="#00cc88"
-          strokeWidth="7"
-        />
+        {node.left && (
+          <motion.line
+            x1="50%"
+            y1="0"
+            x2="25%"
+            y2="100"
+            stroke="#00cc88"
+            strokeWidth="2"
+          />
+        )}
+        {node.right && (
+          <motion.line
+            x1="50%"
+            y1="0"
+            x2="75%"
+            y2="100%"
+            stroke="#00cc88"
+            strokeWidth="2"
+          />
+        )}
       </motion.svg>
+
       <div
+        className="children-container"
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          flexDirection: " row",
+          // border: "1px solid #ccc",
           alignItems: "",
         }}
       >
-        <div>
+        <div
+          // ref={leftChildRef}
+          style={{ justifySelf: "flex-start", width: "50%" }}
+        >
           <div className="childnode-container">
             <TreeDisplay node={node.left} searchedNode={searchedNode} />
           </div>
         </div>
-        <div>
+        <div
+          // ref={rightChildRef}
+          style={{ justifySelf: "flex-end", width: "50%" }}
+        >
           <div className="childnode-container">
             <TreeDisplay node={node.right} searchedNode={searchedNode} />
           </div>

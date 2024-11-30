@@ -26,7 +26,7 @@ const Stack = () => {
   };
 
   return (
-    <div className="main w-screen">
+    <div className="main w-screen" style={{ border: "1px solid #ccc" }}>
       <div className="pop-container">
         <button className="pop-add-button" onClick={() => popClick()}>
           Pop
