@@ -19,7 +19,7 @@ const Layout = () => {
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/algoviz",
     element: <Layout />,
     children: [
       {
