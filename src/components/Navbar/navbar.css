@@ -63,7 +63,7 @@
 
 .NavBtnLink {
   border-radius: 4px;
-  background: #808080;
+  background: #fff;
   padding: 10px 22px;
   color: #000000;
   outline: none;
@@ -75,7 +75,7 @@
   margin-left: 24px;
   &:hover {
     transition: all 0.2s ease-in-out;
-    background: #fff;
-    color: #808080;
+    background: #808080;
+    color: #000000;
   }
 }

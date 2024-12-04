@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./SortedBinaryTree.css";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 class TreeNode {
   constructor(value) {
@@ -14,17 +14,23 @@ const BinaryTree = () => {
   const [root, setRoot] = useState(null);
   const [searchedNode, setSearchedNode] = useState(null);
   const [searchedNodeInput, setSearchedNodeInput] = useState("");
-  const [deletedNode, setDeletedNode] = useState(null);
+  const [showRandomMinMaxInput, setShowRandomMinMaxInput] = useState(false);
   const [deletedNodeInput, setDeletedNodeInput] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [range, setRange] = useState({ min: "", max: "" });
   const [scale, setScale] = useState(1);
+  const [addRandomErrorMessage, setAddRandomErrorMessage] = useState("");
 
   const calculateScale = () => {
     const pageContainer = document.getElementById("page-container");
     const treenode = document.getElementById("treenode");
+    const treeContainer = document.getElementById("tree-container");
     const scaleY = (pageContainer.offsetWidth / treenode.offsetWidth) * 0.9;
     setScale(scaleY);
+
+    if (treeContainer) {
+      treeContainer.scrollLeft = treeContainer.offsetWidth;
+    }
   };
 
   useEffect(() => {
@@ -64,7 +70,7 @@ const BinaryTree = () => {
       console.log("not found!");
       return;
     }
-    if (node.value == searchValue) {
+    if (searchValue && node.value === searchValue) {
       setSearchedNode(node);
       return;
     }
@@ -95,7 +101,7 @@ const BinaryTree = () => {
     if (node.value < value) {
       node.right = deleteNode(node.right, value);
     }
-    if (node.value == value) {
+    if (node.value === value) {
       if (!node.left) {
         return node.right;
       }
@@ -124,10 +130,19 @@ const BinaryTree = () => {
   };
 
   const handleAddRandomNode = () => {
+    if (range.max <= range.min) {
+      setAddRandomErrorMessage("Invalid random node range");
+      return;
+    }
+    setAddRandomErrorMessage("");
     var randomNum =
       Math.floor(Math.random() * (Number(range.max) - Number(range.min) + 1)) +
       Number(range.min);
     handleAdd(randomNum);
+  };
+
+  const toggleShowRandomMinMaxInput = () => {
+    setShowRandomMinMaxInput((p) => !p);
   };
 
   useEffect(() => {
@@ -143,7 +158,7 @@ const BinaryTree = () => {
           maxWidth: "100%",
           padding: "30px",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           justifyContent: "flex-start",
           // border: "1px solid #ccc",
         }}
@@ -153,8 +168,11 @@ const BinaryTree = () => {
           style={{
             border: "1px solid #ccc",
             display: "flex",
-            flexWrap: "wrap",
+            flexDirection: "column",
             justifyContent: "space-between",
+            alignContent: "center",
+            width: "400px",
+            height: "300px",
           }}
         >
           <div className="add-node">
@@ -165,7 +183,7 @@ const BinaryTree = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleAdd(inputValue);
               }}
-              placeholder="Enter a number"
+              placeholder="Node value"
             />
             <button onClick={() => handleAdd(inputValue)}>Add to Tree</button>
           </div>
@@ -177,7 +195,7 @@ const BinaryTree = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSearch(root, searchedNodeInput);
               }}
-              placeholder="search for a node"
+              placeholder="Search for a node"
             />
             <button onClick={() => handleSearch(root, searchedNodeInput)}>
               Search
@@ -197,40 +215,78 @@ const BinaryTree = () => {
             />
             <button onClick={handleDelete}>Delete</button>
           </div>
+
           <div
-            className="generate-random-node"
             style={{
-              display: "flex",
-              flexDirection: "row",
+              position: "relative",
+              width: "500px",
+              margin: "12px",
             }}
           >
-            <div
-              className="min-max-input"
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <label>
-                Min Value:
-                <input
-                  type="number"
-                  value={range.min}
-                  onChange={(e) => handleMinMaxChange("min", e.target.value)}
-                />
-              </label>
-              <label>
-                Max Value:
-                <input
-                  type="number"
-                  value={range.max}
-                  onChange={(e) => handleMinMaxChange("max", e.target.value)}
-                />
-              </label>
-            </div>
-            <button
-              onClick={handleAddRandomNode}
-              style={{ height: "30px", alignSelf: "center" }}
-            >
+            <button onClick={toggleShowRandomMinMaxInput}>
               Add random node
             </button>
+            {showRandomMinMaxInput && (
+              <div
+                className="min-max-input"
+                style={{
+                  zIndex: 9999,
+                  flexDirection: "column",
+                  position: "absolute",
+                  left: "0",
+                  padding: "10px",
+                  background: "#fff",
+                  border: "1px solid #ccc",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <label>
+                  Min Value:
+                  <input
+                    type="number"
+                    className="w-20"
+                    value={range.min}
+                    onChange={(e) => handleMinMaxChange("min", e.target.value)}
+                  />
+                </label>
+                <label>
+                  Max Value:
+                  <input
+                    type="number"
+                    className="w-20"
+                    value={range.max}
+                    onChange={(e) => handleMinMaxChange("max", e.target.value)}
+                  />
+                </label>
+                <div style={{ height: "30px", position: "relative" }}>
+                  <button
+                    onClick={handleAddRandomNode}
+                    style={{
+                      height: "30px",
+                      alignSelf: "center",
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+                {addRandomErrorMessage && (
+                  <div
+                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-2"
+                    role="alert"
+                  >
+                    <span class="block sm:inline">{addRandomErrorMessage}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                      <svg
+                        class="fill-current h-6 w-6 text-red-500"
+                        role="button"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      ></svg>
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div
@@ -238,8 +294,6 @@ const BinaryTree = () => {
           style={{
             width: "100%",
             // border: "1px solid #ccc",
-            // display: "flex",
-            // justifyContent: "flex-start",
             overflowX: "auto",
           }}
         >
